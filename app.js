@@ -1,4 +1,5 @@
 let stockIdxMap = [];
+let myChart;
 function initStockIdxMap(stockList) {
     _.each(stockList, (stock, idx) => {
         stockIdxMap[stock.id] = idx;
@@ -8,12 +9,13 @@ function initStockIdxMap(stockList) {
 function updateData(newData) {
     let stockList = data.stockList;
     //Remove all highlighted stock
-    _.each(stockList, (stock, idx) => Vue.set(stock, 'isActive', false));
+    _.each(stockList, (stock, idx) => {
+        Vue.set(stock, 'isActive', false)
+    });
 
     _.each(newData, (stock) => {
         let stockIdx = stockIdxMap[stock.id];
         stock.isActive = true;
-        // stockList[stockIdx] = stock;
         Vue.set(stockList, stockIdx, stock);
     });
 }
@@ -76,7 +78,28 @@ let app = new Vue({
                     </tr>
                 </tbody>
             </table>
+            <chart></chart>
         </div>
     `,
     data: data
 });
+
+
+function updateAppState() {
+    setInterval(() => {
+        let newData = [];
+        let randomIdx = Math.floor(Math.random() * 5) + 1;
+        console.log("------------------");
+        for (let i=0; i<randomIdx; i++) {
+            let stock = stockList[Math.floor(Math.random() * 5)];
+            stock.price = _.round( stock.price + (Math.random() > 0.5 ? -1 : 1) * Math.random() * 5, 2);
+            newData.push(stock);
+            console.log(stock.name);
+        }
+
+        updateData(newData);
+        updateChart(newData);
+    }, 5000);
+}
+
+updateAppState();

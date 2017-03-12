@@ -55,6 +55,10 @@ function updateChart(newData) {
             x: data.lastUpdated,
             y: data.price
         });
+
+        if (myChart.data.datasets[idx].data.length > 500) {
+            myChart.data.datasets[idx].data.splice(0, 1);
+        }
     });
 
     myChart.update();

@@ -8,11 +8,13 @@ function initChart() {
             datasets: mapChartData(data.stockList)
         },
         options: {
+            animation : false,
             scales: {
                 xAxes: [{
                     type: 'linear',
                     position: 'bottom',
                     ticks: {
+                        fixedStepSize: 0.25*60*1000,
                         display: true,
                         callback: function(value, index, values) {
                             return getDisplayTime(value);

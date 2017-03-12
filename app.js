@@ -120,7 +120,7 @@ function updateAppState() {
 
         updateData(newData);
         updateChart(newData);
-    }, 5000);
+    }, 500);
 }
 
-//updateAppState();
+updateAppState();

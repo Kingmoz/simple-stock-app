@@ -45,7 +45,6 @@ function mapChartData(stockList) {
     return datasets;
 }
 
-let i=1;
 function updateChart(newData) {
     if (newData.length <= 0) return;
 

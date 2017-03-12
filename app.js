@@ -1,8 +1,23 @@
 let stockIdxMap = [];
 let myChart;
+
+// Helper function
+
+function getDisplayTime(timestamp) {
+    let date = new Date(timestamp);
+    let time = ((date.getHours() < 10) ? "0" : "") + date.getHours() + ":"
+             + ((date.getMinutes() < 10) ? "0" : "") + date.getMinutes() + ":"
+             + ((date.getSeconds() < 10) ? "0" : "") + date.getSeconds();
+
+    return time;
+}
+
 function initStockIdxMap(stockList) {
+    let time = new Date().getTime();
+
     _.each(stockList, (stock, idx) => {
         stockIdxMap[stock.id] = idx;
+        stock.lastUpdated = time;
     });
 }
 
@@ -42,7 +57,7 @@ let stockList = [
     {
         id: "GOOGL",
         name: "Alphabet Inc",
-        price: 861.41,
+        price: 86.41,
         lastUpdated: "04:00:00"
     },
     {
@@ -74,14 +89,17 @@ let app = new Vue({
                     <tr v-for="stock in stockList" :class="{ warning: stock.isActive}">
                         <td>{{stock.name}}</td>
                         <td>{{stock.price}}</td>
-                        <td>{{stock.lastUpdated}}</td>
+                        <td>{{stock.lastUpdated | displayTime}}</td>
                     </tr>
                 </tbody>
             </table>
             <chart></chart>
         </div>
     `,
-    data: data
+    data: data,
+    filters: {
+        displayTime: getDisplayTime
+    }
 });
 
 
@@ -89,10 +107,13 @@ function updateAppState() {
     setInterval(() => {
         let newData = [];
         let randomIdx = Math.floor(Math.random() * 5) + 1;
+        let time = new Date().getTime();
+
         console.log("------------------");
         for (let i=0; i<randomIdx; i++) {
             let stock = stockList[Math.floor(Math.random() * 5)];
             stock.price = _.round( stock.price + (Math.random() > 0.5 ? -1 : 1) * Math.random() * 5, 2);
+            stock.lastUpdated = time;
             newData.push(stock);
             console.log(stock.name);
         }
@@ -102,4 +123,4 @@ function updateAppState() {
     }, 5000);
 }
 
-updateAppState();
+//updateAppState();

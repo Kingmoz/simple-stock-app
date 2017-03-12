@@ -1,11 +1,26 @@
 let colorSet = ["rgba(255,0,0,1)", "rgba(20,97,216,1)", "rgba(216,184,20,1)", "rgba(20,216,118,1)", "rgba(151,187,205,1)"]
 
 function initChart() {
-    let canvas = document.getElementById("stockChart");
-    let ctx = canvas.getContext('2d');
-    myChart = new Chart(ctx).Line({
-        labels: [1],
-        datasets: mapChartData(data.stockList)
+    let ctx = document.getElementById("stockChart");
+    myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            datasets: mapChartData(data.stockList)
+        },
+        options: {
+            scales: {
+                xAxes: [{
+                    type: 'linear',
+                    position: 'bottom',
+                    ticks: {
+                        display: true,
+                        callback: function(value, index, values) {
+                            return getDisplayTime(value);
+                        }
+                    }
+                }]
+            }
+        }
     });
 }
 
@@ -15,10 +30,13 @@ function mapChartData(stockList) {
     _.each(stockList, (stock, idx) => {
         datasets.push({
             label: stock.name,
-            fillColor: "rgba(220,220,220,0)",
-            strokeColor: colorSet[idx],
-            pointColor: colorSet[idx],
-            data: [stock.price]
+            borderColor: colorSet[idx],
+            pointBackgroundColor: colorSet[idx],
+            fill: false,
+            data: [{
+                x: stock.lastUpdated,
+                y: stock.price
+            }]
         });
     });
 
@@ -29,16 +47,15 @@ let i=1;
 function updateChart(newData) {
     if (newData.length <= 0) return;
 
-    let dataSets = [];
     _.each(newData, (data) => {
         let idx = stockIdxMap[data.id];
-        dataSets[idx] = data.price;
+        myChart.data.datasets[idx].data.push({
+            x: data.lastUpdated,
+            y: data.price
+        });
     });
 
-    // Add null value to array to avoid chart.js error
-    _.each(dataSets, (data,idx) => dataSets[idx] = data || null);
-
-    myChart.addData(dataSets, ++i);
+    myChart.update();
 }
 
 Vue.component('chart', {

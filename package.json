@@ -1,0 +1,15 @@
+{
+  "name": "stock-mini-demo",
+  "version": "1.0.0",
+  "description": "A simple stock app for demo purpose",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "author": "King Chan <kingsangchan@gmail.com>",
+  "dependencies": {
+    "express": "^4.15.2",
+    "lodash": "^4.17.4",
+    "socket.io": "^1.7.3"
+  }
+}

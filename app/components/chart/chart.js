@@ -5,7 +5,7 @@ function initChart() {
     myChart = new Chart(ctx, {
         type: 'line',
         data: {
-            datasets: mapChartData(data.stockList)
+            datasets: mapChartData(appData.stockList)
         },
         options: {
             animation : false,
@@ -68,6 +68,5 @@ Vue.component('chart', {
         <div class="chart">
             <canvas id="stockChart" width="1300" height="400"></canvas>
         </div>
-    `,
-    mounted: initChart
+    `
 });

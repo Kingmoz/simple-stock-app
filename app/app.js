@@ -1,14 +1,25 @@
 let stockIdxMap = [];
 let myChart;
-let stockList = getStockList();
-let data = {
-    stockList: stockList
+let appData = {
+    stockList: []
 };
+let socket = io();
 
 // App function
 function initApp() {
-    initStockIdxMap(stockList);
-    updateAppState();
+    Vue.http.get('/stockList', []).then(function(data) {
+        let res = data.body;
+        appData.stockList = res;
+
+        initChart();
+        initStockIdxMap(appData.stockList);
+
+        // Connect backend with socket.io
+        socket.emit('start');
+        socket.on('data', function(data) {
+            updateAppState(data);
+        });
+    });
 }
 
 function initStockIdxMap(stockList) {
@@ -21,7 +32,7 @@ function initStockIdxMap(stockList) {
 }
 
 function updateData(newData) {
-    let stockList = data.stockList;
+    let stockList = appData.stockList;
     //Remove all highlighted stock
     _.each(stockList, (stock, idx) => {
         Vue.set(stock, 'isActive', false)
@@ -58,7 +69,7 @@ let app = new Vue({
             <chart></chart>
         </div>
     `,
-    data: data,
+    data: appData,
     filters: {
         displayTime: getDisplayTime
     },
